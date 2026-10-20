@@ -1,0 +1,16 @@
+# Build output and dependencies of the Vencord checkout the scripts create
+node_modules/
+dist/
+
+# The Vencord checkout itself, when cloned next to this repository
+Vencord/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and caches
+*.log
+*.tsbuildinfo
