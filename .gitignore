@@ -4,6 +4,8 @@ dist/
 
 # The Vencord checkout itself, when cloned next to this repository
 Vencord/
+# Incomplete checkouts moved aside by the install script
+Vencord.broken-*/
 
 # Editors and OS
 .vscode/

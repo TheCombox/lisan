@@ -32,11 +32,17 @@ Translates messages with **Google Translate** (free, no API key) or **DeepL** (A
 
 ## Requirements
 
-- Discord desktop (Windows, macOS or Linux)
-- Node.js **>= 22**
-- Git
+- **Discord desktop app.** Use the normal download from [discord.com/download](https://discord.com/download);
+  the Microsoft Store build is not supported by the Vencord installer.
+- [Node.js](https://nodejs.org/en/download) **22 or newer**
+- [Git](https://git-scm.com/download/win)
 
-pnpm is installed by the script if it is missing (pinned to `11.9.0`, the version Vencord expects).
+The install script checks all three and stops with an explanation if one is missing or too old.
+pnpm is installed automatically when it is missing. If an old pnpm (below 11) is already installed,
+it is upgraded, because those releases cannot read Vencord's lockfile.
+
+The install scripts are PowerShell, so the setup currently runs on **Windows**. The plugin itself
+is not Windows-specific.
 
 ---
 
@@ -50,6 +56,16 @@ The plugin is compiled into Vencord, so it is not a drop-in file. The script doe
 4. downloads the Vencord installer and patches Discord.
 
 **Close Discord first** (including the tray icon).
+
+### Easiest: double-click
+
+1. [Download](https://github.com/TheCombox/lisan/archive/refs/heads/main.zip) or clone this repository.
+2. Double-click **`install.cmd`**.
+3. Answer `y` when it asks whether to patch Discord.
+
+A ZIP download works fine: the script clones Vencord itself, so a `.git` folder is not needed.
+
+### Or from a terminal
 
 ```powershell
 git clone https://github.com/TheCombox/lisan.git
@@ -67,7 +83,12 @@ Useful flags:
 | `-SkipDependencies` | Skip `pnpm install` (faster after the first run) |
 | `-NoConfirm` | Do not ask before patching Discord |
 
-Vencord is installed as a **dev install**, so it loads from this checkout: after a rebuild you only need to restart Discord, not reinstall.
+Vencord is installed as a **dev install**, so it loads from this checkout: after a rebuild you only
+need to restart Discord, not reinstall.
+
+> **Keep this folder.** The dev install makes Discord load its patcher from here. Moving or
+> deleting the folder afterwards stops Discord from starting; move it back, or run `install.cmd`
+> again from the new location. If a Discord update removes Lisan, run `install.cmd` again.
 
 ---
 
@@ -145,9 +166,25 @@ Last run: **47 passed, 0 failed.** They cover multi-line segment joining, langua
 | `styles.css` | Styles |
 | `test/verify.ts` | Core tests, runnable without Discord |
 | `test/rate-limit-probe.mjs` | Probes how the Google endpoints throttle |
+| `install.cmd`, `update.cmd` | Double-click wrappers for the two scripts below |
 | `scripts/install.ps1`, `scripts/update.ps1` | Setup and development-loop scripts |
 
 Only the `.ts`, `.tsx` and `.css` files are copied into the Vencord checkout, so the plugin folder stays clean.
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `git : The term 'git' is not recognized` | Git is missing or not on PATH. Install it from [git-scm.com](https://git-scm.com/download/win) and open a new terminal. |
+| `Node.js v… is too old; Vencord needs 22 or newer` | Install the current LTS from [nodejs.org](https://nodejs.org/en/download). |
+| `pnpm install failed` or a lockfile error | Delete the `Vencord` folder and run `install.cmd` again. The script upgrades pnpm versions below 11, which cannot read Vencord's lockfile. |
+| `fatal: detected dubious ownership in repository` | Windows says the checkout belongs to another user (usually after copying the folder from another PC). The build no longer calls git for its version stamp, but cloning still does. Either delete the `Vencord` folder and reinstall, or run `git config --global --add safe.directory "<path to Vencord>"`. |
+| `The Vencord installer failed` | Close Discord completely, including the tray icon, and make sure it is the normal desktop app (not the Microsoft Store build), then retry. |
+| Discord will not start after moving the folder | The dev install points at the folder. Move it back, or run `install.cmd` again from the new location. |
+| Lisan disappeared after a Discord update | Discord installs into a new `app-*` folder. Run `install.cmd` again. |
+| The build fails right after a Vencord change | Delete the `Vencord` folder and run `install.cmd` again to get a fresh checkout. |
 
 ---
 

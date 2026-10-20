@@ -6,7 +6,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { Button } from "@components/Button";
 import { OptionType } from "@utils/types";
-import { showToast, Toasts } from "@webpack/common";
+import { showToast } from "@webpack/common";
 
 import { COMMON_LANGUAGES } from "./languages";
 import { autoChannelCount, disableAllAuto } from "./state";
@@ -57,11 +57,11 @@ export const settings = definePluginSettings({
                 <Button
                     onClick={() => {
                         if (count === 0) {
-                            showToast("Lisan: otomatik çeviri açık kanal yok.", Toasts.Type.MESSAGE);
+                            showToast({ text: "Lisan: otomatik çeviri açık kanal yok." });
                             return;
                         }
                         const disabled = disableAllAuto();
-                        showToast(`Lisan: ${disabled} kanalda otomatik çeviri kapatıldı.`, Toasts.Type.SUCCESS);
+                        showToast({ text: `Lisan: ${disabled} kanalda otomatik çeviri kapatıldı.`, variant: "success" });
                     }}
                 >
                     {count === 0

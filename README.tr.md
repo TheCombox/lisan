@@ -32,11 +32,17 @@ Mesajları **Google Çeviri** (ücretsiz, anahtar gerekmez) veya **DeepL** (API 
 
 ## Gereksinimler
 
-- Discord masaüstü (Windows, macOS veya Linux)
-- Node.js **>= 22**
-- Git
+- **Discord masaüstü uygulaması.** [discord.com/download](https://discord.com/download) adresinden normal sürümü kur;
+  Microsoft Store sürümü Vencord kurucusu tarafından desteklenmiyor.
+- [Node.js](https://nodejs.org/en/download) **22 veya üzeri**
+- [Git](https://git-scm.com/download/win)
 
-pnpm eksikse script kurar (Vencord'ın beklediği sürüme sabitlenmiştir: `11.9.0`).
+Kurulum scripti üçünü de denetler; biri eksik veya eskiyse ne yapılacağını söyleyip durur.
+pnpm yoksa otomatik kurulur. Kurulu pnpm 11'den eskiyse yükseltilir, çünkü eski sürümler
+Vencord'ın lockfile'ını okuyamaz.
+
+Kurulum scriptleri PowerShell olduğu için şu an **Windows** üzerinde çalışır. Eklentinin kendisi
+Windows'a özel değildir.
 
 ---
 
@@ -50,6 +56,16 @@ Eklenti Vencord'ın içine derlendiği için tek dosya olarak bırakılamaz. Scr
 4. Vencord kurucusunu indirip Discord'u yamalar.
 
 **Önce Discord'u kapat** (tepsi simgesi dahil).
+
+### En kolay yol: çift tıkla
+
+1. Bu depoyu [indir](https://github.com/TheCombox/lisan/archive/refs/heads/main.zip) veya klonla.
+2. **`install.cmd`** dosyasına çift tıkla.
+3. Discord'u yamalamak isteyip istemediği sorulduğunda `y` yaz.
+
+ZIP olarak indirmek sorun değil: Vencord'ı script kendisi klonladığı için `.git` klasörü gerekmez.
+
+### Ya da terminalden
 
 ```powershell
 git clone https://github.com/TheCombox/lisan.git
@@ -67,7 +83,13 @@ Kullanışlı parametreler:
 | `-SkipDependencies` | `pnpm install` adımını atla (ilk kurulumdan sonra daha hızlı) |
 | `-NoConfirm` | Discord'u yamalamadan önce onay sorma |
 
-Vencord **dev install** olarak kurulur, yani bu depodan yüklenir: yeniden derledikten sonra tekrar kurulum gerekmez, Discord'u yeniden başlatmak yeterlidir.
+Vencord **dev install** olarak kurulur, yani bu depodan yüklenir: yeniden derledikten sonra tekrar
+kurulum gerekmez, Discord'u yeniden başlatmak yeterlidir.
+
+> **Bu klasörü sakla.** Dev install, Discord'un patcher'ı buradan yüklemesini sağlar. Kurulumdan
+> sonra klasörü taşırsan veya silersen Discord açılmaz; geri taşı ya da yeni konumdan
+> `install.cmd` dosyasını yeniden çalıştır. Bir Discord güncellemesi Lisan'ı kaldırırsa
+> `install.cmd` dosyasını tekrar çalıştır.
 
 ---
 
@@ -143,9 +165,25 @@ Son çalıştırma: **47 geçti, 0 kaldı.** Kapsam: çok satırlı metinlerde p
 | `styles.css` | Stiller |
 | `test/verify.ts` | Çekirdek testleri (Discord gerekmez) |
 | `test/rate-limit-probe.mjs` | Google uç noktalarının hız sınırını ölçer |
+| `install.cmd`, `update.cmd` | Alttaki iki script için çift tıklama kısayolları |
 | `scripts/install.ps1`, `scripts/update.ps1` | Kurulum ve geliştirme döngüsü scriptleri |
 
 Vencord deposuna yalnızca `.ts`, `.tsx` ve `.css` dosyaları kopyalanır, yani eklenti klasörü temiz kalır.
+
+---
+
+## Sorun giderme
+
+| Belirti | Çözüm |
+|---|---|
+| `git : The term 'git' is not recognized` | Git kurulu değil veya PATH'te yok. [git-scm.com](https://git-scm.com/download/win) adresinden kur ve terminali yeniden aç. |
+| `Node.js v… is too old; Vencord needs 22 or newer` | [nodejs.org](https://nodejs.org/en/download) adresinden güncel LTS sürümü kur. |
+| `pnpm install failed` veya lockfile hatası | `Vencord` klasörünü sil ve `install.cmd` dosyasını yeniden çalıştır. Script, Vencord'ın lockfile'ını okuyamayan 11 altı pnpm sürümlerini yükseltir. |
+| `fatal: detected dubious ownership in repository` | Windows, deponun başka bir kullanıcıya ait olduğunu düşünüyor (genelde klasör başka PC'den kopyalanınca). Derleme artık sürüm damgası için git'i çağırmıyor, ama klonlama hâlâ çağırıyor. `Vencord` klasörünü silip yeniden kur, ya da `git config --global --add safe.directory "<Vencord yolu>"` çalıştır. |
+| `The Vencord installer failed` | Discord'u tamamen kapat (tepsi simgesi dahil), normal masaüstü sürümünü kullandığından emin ol (Microsoft Store sürümü değil), sonra tekrar dene. |
+| Klasör taşındıktan sonra Discord açılmıyor | Dev install bu klasörü işaret eder. Klasörü geri taşı ya da yeni konumdan `install.cmd` çalıştır. |
+| Discord güncellemesinden sonra Lisan kayboldu | Discord yeni bir `app-*` klasörüne kurulur. `install.cmd` dosyasını yeniden çalıştır. |
+| Vencord değişikliğinden hemen sonra derleme patlıyor | `Vencord` klasörünü silip `install.cmd` ile temiz bir kopya al. |
 
 ---
 

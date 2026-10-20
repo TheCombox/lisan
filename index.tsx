@@ -8,7 +8,7 @@ import "./styles.css";
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import definePlugin from "@utils/types";
 import { Message } from "@vencord/discord-types";
-import { ChannelStore, Menu, showToast, Toasts } from "@webpack/common";
+import { ChannelStore, Menu, showToast } from "@webpack/common";
 
 import { AutoTranslateChatBarButton } from "./AutoTranslateButton";
 import { LisanIcon } from "./LisanIcon";
@@ -25,7 +25,7 @@ async function translateMessage(message: Message, silent = false) {
 
         // Kaynak metinle birebir aynıysa mesaj zaten hedef dilde
         if (value.text.trim() === content.trim()) {
-            if (!silent) showToast("Bu mesaj zaten hedef dilde görünüyor.", Toasts.Type.MESSAGE);
+            if (!silent) showToast({ text: "Bu mesaj zaten hedef dilde görünüyor." });
             return;
         }
 

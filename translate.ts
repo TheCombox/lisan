@@ -9,7 +9,7 @@
 import { Logger } from "@utils/Logger";
 import { onlyOnce } from "@utils/onlyOnce";
 import { PluginNative } from "@utils/types";
-import { showToast, Toasts } from "@webpack/common";
+import { showToast } from "@webpack/common";
 
 import { googleToDeepl } from "./languages";
 import { parseDeeplResponse, parseGoogleCompactResponse, parseGoogleResponse, TranslationValue } from "./parse";
@@ -103,10 +103,10 @@ function cooldownBaslat() {
 
     if (!cooldownUyarildi) {
         cooldownUyarildi = true;
-        showToast(
-            "Google Çeviri istekleri sınırladı. Otomatik çeviri bir süre duraklatıldı.",
-            Toasts.Type.FAILURE
-        );
+        showToast({
+            text: "Google Çeviri istekleri sınırladı. Otomatik çeviri bir süre duraklatıldı.",
+            variant: "critical"
+        });
         setTimeout(() => { cooldownUyarildi = false; }, COOLDOWN_MS + 500);
     }
 }
@@ -121,11 +121,11 @@ export function cacheSize(): number {
 }
 
 const warnMissingDeeplKey = onlyOnce(
-    () => showToast("DeepL API anahtarı girilmemiş. Google Çeviri kullanılıyor.", Toasts.Type.FAILURE)
+    () => showToast({ text: "DeepL API anahtarı girilmemiş. Google Çeviri kullanılıyor.", variant: "critical" })
 );
 
 const warnDeeplQuota = onlyOnce(
-    () => showToast("DeepL kotası doldu. Google Çeviri kullanılıyor.", Toasts.Type.FAILURE)
+    () => showToast({ text: "DeepL kotası doldu. Google Çeviri kullanılıyor.", variant: "critical" })
 );
 
 async function googleTranslate(text: string, source: string, target: string): Promise<TranslationValue> {
@@ -245,7 +245,7 @@ export function translate(text: string, opts: TranslateOptions = {}): Promise<Tr
             logger.error("Çeviri başarısız:", e);
             // Otomatik modda sessiz kal; kullanıcıya yalnızca elle çeviride bildir
             if (!opts.silent && !(e instanceof Error && e.message === "Google Çeviri geçici olarak duraklatıldı.")) {
-                showToast(hataMetni(e), Toasts.Type.FAILURE);
+                showToast({ text: hataMetni(e), variant: "critical" });
             }
             throw e;
         })
